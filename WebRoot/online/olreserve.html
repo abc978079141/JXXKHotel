@@ -1,0 +1,129 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>olreserve.html</title>
+    <link rel="stylesheet" type="text/css" href="../css/reserve/global.css"/>
+    <link rel="stylesheet" href="../css/reserve/jquery.ui.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../css/reserve/css.css"/>
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css" />
+	<link rel="stylesheet" type="text/css" href="../js/easyui/themes/bootstrap/easyui.css" />
+  </head>
+  	<script type="text/javascript" src="../js/reserve/jquery.ui.js"></script>
+	<script type="text/javascript" src="../js/jquery.min.js"></script>
+	<script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js"></script>
+  <script type="text/javascript">
+  	$(function(){
+  		$.getJSON("../room/gethotel.do", function(json) {
+					$('#hotel').combobox({
+					data : json.hlist,
+					valueField:'hid',
+					textField:'hname',
+					 panelHeight:'auto',  
+		                required:true,  
+		                editable:true,
+		                onChange: function (n,o) {
+		                		$("#hid").val(n);
+		                		/* 动态生成房间类型表格*/
+								$.getJSON("../room/getrtype.do?act=getrooms&hid="+n, function(json){
+									$('#roomtype').combobox({
+									data : json.rtlist,
+									valueField:'id',
+									textField:'typename',
+									onChange: function (n,o) {
+										$.getJSON("../room/getrtype.do?typeid="+n+"&act=getrooms", function(json) {
+										$('#rooms').combobox({
+										data : json.rooms,
+										valueField:'roomnum',
+										textField:'roomnum',
+										 panelHeight:'auto',  
+							                required:true,  
+							                editable:true
+											});
+										});
+									}
+								});
+							});
+		                }
+					});
+				});
+		
+				/*日期控件初始化 */
+				   var curr_time = new Date();
+				   var Year=curr_time.getFullYear();
+				   var Month=curr_time.getMonth()+1;
+				   var Day=curr_time.getDate()+1;
+				   var Day2=Day+1;
+				   var starttime =Year +"-"+Month+"-"+Day+" "+"18:00:00";
+				   var endtime = Year +"-"+Month+"-"+Day2+" "+"12:00:00";
+				  	$("#starttime").datetimebox("setValue",starttime);
+				  	$("#endtime").datetimebox("setValue",endtime);
+			});
+				
+				
+  </script>
+  <body>
+	<!--中间-->
+<div class="webIndex" align="center" style="margin-top: 120px;">
+<div class="stay-list clearFloat">
+    <div class="stay-list-left">
+        <span class="search-sign"></span>
+        <h3 class="search-title">极限星空酒店住宿预订</h3>
+        <form method="post" onsubmit="" id="myform">
+        	 <div class="sea-div">
+                <label class="search-lab">预订酒店：</label><input class="easyui-combobox" name="hid"  id="hotel" style="width:200px;"/>
+                <input type="hidden" id="hid" name="hid">
+            </div>
+        	 <div class="sea-div">
+                <label class="search-lab">房间类型：</label><input class="easyui-combobox" name="roomtype"  id="roomtype" style="width:200px;"/>
+            </div>
+            <div class="sea-div">
+                <label class="search-lab">房间编号：</label><input class="easyui-combobox" name="roomnum"  id="rooms" style="width:200px;"/>
+            </div>
+            <div class="sea-div">
+                <label class="search-lab">会员卡号：</label><input type="text" placeholder="会员可填写" class="hotel-name"  name="memnum"/>
+            </div>
+            <div class="sea-div">
+                <label class="search-lab">宾客姓名：</label><input type="text" placeholder="您的姓名" class="hotel-name"  name="resname"/>
+            </div>
+               <div class="sea-div">
+                <label class="search-lab">联系电话：</label><input type="text" placeholder="手机号码" class="hotel-name"  name="restel"/>
+            </div>
+            <div class="sea-div">
+									<label>抵店时间：</label><input id="starttime" class="easyui-datetimebox" name="starttime" style="width: 200px" ></input>
+            </div>
+            <div class="sea-div">
+									<label>预离时间：</label><input id="endtime" class="easyui-datetimebox" name="endtime" style="width: 200px" ></input>
+            </div>
+            <div class="sea-div">
+                <label class="search-lab">备注信息：</label><input type="text"   placeholder="您的其他要求" name="remark" />
+            </div>
+            <input type="submit"  class="search-but" value="确认预定" style="background-color: red;" id="btnsubmit"/>
+        </form>
+    </div>
+</div>
+</div>
+
+<script type="text/javascript" src="../js/reserve/hotel.search.js"></script>
+<script type="text/javascript">
+	$(document).ready(function () {
+        $("#btnsubmit").click(function () {
+            var options = {
+                url: '../res/olres.do',
+                type: 'post',
+                dataType: 'text',
+                data: $("#myform").serialize(),
+                success: function (data) {
+                    if (data.length > 0)
+                       alert("预订成功");
+                	}
+            };
+            $.ajax(options);
+            return false;
+        });
+    });
+</script>
+  </body>
+</html>

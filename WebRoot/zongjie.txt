@@ -1,0 +1,15 @@
+			//字体样式设置
+			HSSFFont font = wb.createFont();
+	        font.setFontHeightInPoints((short) 20); //字体高度
+	        font.setColor(HSSFFont.COLOR_RED); //字体颜色
+	        font.setFontName("宋体"); //字体
+	        font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD); //宽度
+	        /**设置单元格样式
+	         */
+	        HSSFCellStyle cellStyle = wb.createCellStyle();
+	        cellStyle.setFont(font);
+	        cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER); //水平布局：居中
+	        cellStyle.setWrapText(true);
+	        sheet1.setColumnWidth((short) 0, (short) 350);//列宽
+	        sheet1.setColumnWidth(i, 10 * 512);  
+	        
